@@ -36,6 +36,10 @@
 - [x] 嵌套 Flex 结构最终修复：将分割线责任从 aside 的 border-r 转移至右侧容器的 border-l，分割线从容器顶部（含 Header）开始，与 Sidebar 右侧天然无缝对接，彻底解决物理错位问题
 - [x] Header 与 Sidebar Logo 区域统一固定高度 h-14，水平分割线完美对齐
 - [x] 全部分类视图分类块间距调整：使用 space-y-5 包裹分类列表，替代失效的 first:mt-0 方案
+- [x] 图标系统国内访问优化：改用 favicon.rss.ink CDN 获取网站真实图标，加载失败回退首字母色块，loading="lazy" 防止首屏阻塞
+- [x] 图标系统已简化为 API+色块双保险模式：api.iowen.cn 为主，失败回退首字母色块，加载期间灰色占位防跳变
+- [x] 图标系统已升级为：直连 -> 全球级 API -> 色块，解决图标抓取率低的问题（iconStatus 三级状态机：origin -> api -> color）
+- [x] 已实现全局图标缓存与组件保活，消除切换闪烁（iconCache.js 模块级 reactive 对象，onMounted 读取缓存直接跳过探测，@load 写入成功状态）
 
 ### [ ] 待完成
 

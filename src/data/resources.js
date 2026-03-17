@@ -1,11 +1,11 @@
 export const categories = [
   { id: 'all', name: '全部', icon: 'LayoutGrid' },
   { id: 'video', name: '影视', icon: 'Film' },
+  { id: 'news', name: '资讯', icon: 'Newspaper' },
   { id: 'tools', name: '工具', icon: 'Wrench' },
   { id: 'dev', name: '开发', icon: 'Code2' },
   { id: 'design', name: '设计', icon: 'Palette' },
   { id: 'ai', name: 'AI', icon: 'Bot' },
-  { id: 'news', name: '资讯', icon: 'Newspaper' },
 ]
 
 export const resources = [
@@ -27,4 +27,8 @@ export const resources = [
   { id: 16, category: 'ai',     name: 'Claude',      desc: 'Anthropic 对话 AI',        url: 'https://claude.ai',                color: '#d97706', tags: ['AI', '对话', '高效'] },
   { id: 17, category: 'news',   name: '少数派',      desc: '高质量数字生活媒体',       url: 'https://sspai.com',                color: '#d71a1b', tags: ['资讯', '数字生活', '国内'] },
   { id: 18, category: 'news',   name: 'V2EX',        desc: '创意工作者社区',           url: 'https://v2ex.com',                 color: '#4a9eff', tags: ['社区', '技术', '国内'] },
+  { id: 19, category: 'tools',  name: '订阅转换',     desc: '订阅转换工具',             url: 'https://linuxdo.icmpmiao.cc',     color: '#3d9970', tags: ['免费', '技术', '高效'] },
+  { id: 20, category: 'news',   name: 'LINUX DO',    desc: '高品质新时代技术社区',      url: 'https://linux.do',                 color: '#4a9eff', tags: ['社区', '技术', '国内'] },
+
+
 ]

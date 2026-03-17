@@ -22,10 +22,19 @@
     <!-- Icon + name -->
     <div class="flex items-center gap-3 pr-5">
       <div
-        class="w-9 h-9 rounded-lg flex items-center justify-center text-white text-sm font-bold shrink-0"
-        :style="{ backgroundColor: resource.color }"
+        class="w-9 h-9 rounded-lg flex items-center justify-center text-white text-sm font-bold shrink-0 overflow-hidden"
+        :style="iconStatus === 'color' ? { backgroundColor: resource.color } : { backgroundColor: '#f3f4f6' }"
       >
-        {{ resource.name.charAt(0) }}
+        <img
+          v-if="iconStatus !== 'color'"
+          :src="faviconSrc"
+          :alt="resource.name"
+          class="w-6 h-6 object-contain"
+          loading="lazy"
+          @load="onIconLoad"
+          @error="onIconError"
+        />
+        <span v-else>{{ resource.name.charAt(0) }}</span>
       </div>
       <span class="font-semibold text-gray-800 dark:text-gray-100 text-sm truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
         {{ resource.name }}
@@ -53,8 +62,9 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { ExternalLink, Star } from 'lucide-vue-next'
+import { iconCache } from '../iconCache.js'
 
 const props = defineProps({
   resource: { type: Object, required: true },
@@ -62,11 +72,37 @@ const props = defineProps({
 })
 defineEmits(['toggleFav'])
 
-const displayUrl = computed(() => {
-  try {
-    return new URL(props.resource.url).hostname
-  } catch {
-    return props.resource.url
+const hostname = computed(() => {
+  try { return new URL(props.resource.url).hostname } catch { return '' }
+})
+
+// 'origin' -> 'api' -> 'color'
+const iconStatus = ref('origin')
+
+onMounted(() => {
+  if (hostname.value && iconCache[hostname.value]) {
+    iconStatus.value = iconCache[hostname.value]
   }
 })
+
+const faviconSrc = computed(() => {
+  if (iconStatus.value === 'origin') return `https://${hostname.value}/favicon.ico`
+  if (iconStatus.value === 'api')    return `https://favicon.splitbee.io/?url=${hostname.value}`
+  return ''
+})
+
+function onIconError() {
+  if (iconStatus.value === 'origin') {
+    iconStatus.value = 'api'
+  } else {
+    iconStatus.value = 'color'
+    if (hostname.value) iconCache[hostname.value] = 'color'
+  }
+}
+
+function onIconLoad() {
+  if (hostname.value) iconCache[hostname.value] = iconStatus.value
+}
+
+const displayUrl = computed(() => hostname.value || props.resource.url)
 </script>
