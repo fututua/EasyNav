@@ -31,7 +31,11 @@
 - [x] resources.js 数据规范化，每条资源含 tags 数组（18 条，6 分类）
 - [x] 收藏功能（★ 按钮，localStorage 持久化，侧边栏"我的收藏"入口）
 - [x] index.html SEO 元数据（title / description / keywords / og / favicon）
-- [x] vite.config.js 生产构建优化（代码分割 vue / lucide chunk）
+- [x] UI 像素级对齐修复（侧边栏 border-r 与顶栏 border-b 颜色统一：亮色 gray-200 / 暗色 gray-800）
+- [x] 物理对齐结构重构（桌面端 Sidebar 改为文档流内 flex 子元素，Header 在右侧 flex-col 容器顶部，border-r 与 border-b 物理精准对接，彻底消除 1px 错位）
+- [x] 嵌套 Flex 结构最终修复：将分割线责任从 aside 的 border-r 转移至右侧容器的 border-l，分割线从容器顶部（含 Header）开始，与 Sidebar 右侧天然无缝对接，彻底解决物理错位问题
+- [x] Header 与 Sidebar Logo 区域统一固定高度 h-14，水平分割线完美对齐
+- [x] 全部分类视图分类块间距调整：使用 space-y-5 包裹分类列表，替代失效的 first:mt-0 方案
 
 ### [ ] 待完成
 

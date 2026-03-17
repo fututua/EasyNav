@@ -1,19 +1,40 @@
 <template>
-  <div class="min-h-screen bg-gray-50 dark:bg-gray-950 transition-colors duration-300">
-    <!-- Sidebar -->
-    <Sidebar
-      :active="activeCategory"
-      :isOpen="sidebarOpen"
-      :isDark="isDark"
-      @select="selectCategory"
-      @close="sidebarOpen = false"
-      @toggleDark="toggleDark"
+  <div class="flex h-screen bg-gray-50 dark:bg-gray-950 transition-colors duration-300 overflow-hidden">
+
+    <!-- Sidebar: desktop in-flow, mobile fixed overlay -->
+    <aside class="hidden md:flex md:shrink-0 md:w-56 md:flex-col bg-white dark:bg-gray-900 h-full">
+      <Sidebar
+        :active="activeCategory"
+        :isDark="isDark"
+        @select="selectCategory"
+        @toggleDark="toggleDark"
+      />
+    </aside>
+
+    <!-- Mobile sidebar: fixed overlay -->
+    <aside
+      v-if="sidebarOpen"
+      class="fixed inset-y-0 left-0 z-40 w-56 flex flex-col bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 md:hidden"
+    >
+      <Sidebar
+        :active="activeCategory"
+        :isDark="isDark"
+        @select="selectCategory"
+        @toggleDark="toggleDark"
+      />
+    </aside>
+
+    <!-- Mobile overlay -->
+    <div
+      v-if="sidebarOpen"
+      class="fixed inset-0 z-30 bg-black/50 md:hidden"
+      @click="sidebarOpen = false"
     />
 
-    <!-- Main wrapper -->
-    <div class="md:ml-56 flex flex-col min-h-screen">
-      <!-- Top header -->
-      <header class="sticky top-0 z-20 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 px-4 md:px-6 py-3 flex items-center gap-4 transition-colors">
+    <!-- Right panel: header + scrollable content -->
+    <div class="flex-1 flex flex-col h-screen overflow-hidden border-l border-gray-200 dark:border-gray-800">
+      <!-- Header sits physically at the top of the right panel -->
+      <header class="shrink-0 h-14 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 px-4 md:px-6 flex items-center gap-4 transition-colors z-20">
         <!-- Hamburger (mobile only) -->
         <button
           class="md:hidden p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-700 dark:text-gray-300"
@@ -33,7 +54,6 @@
             placeholder="搜索资源..."
             class="w-full pl-9 pr-8 py-2 text-sm bg-gray-100 dark:bg-gray-800 dark:text-gray-200 dark:placeholder-gray-500 rounded-lg border border-transparent focus:border-indigo-400 focus:bg-white dark:focus:bg-gray-700 focus:outline-none transition-colors"
           />
-          <!-- Clear button -->
           <button
             v-if="searchQuery"
             @click="searchQuery = ''"
@@ -44,14 +64,13 @@
           </button>
         </div>
 
-        <!-- Result count -->
         <span class="hidden sm:block text-xs text-gray-400 dark:text-gray-500 shrink-0">
           {{ filteredResources.length }} 个资源
         </span>
       </header>
 
-      <!-- Content -->
-      <main class="flex-1 px-4 md:px-6 py-6">
+      <!-- Scrollable content -->
+      <main class="flex-1 overflow-y-auto px-4 md:px-6 py-6">
         <!-- Favorites view -->
         <template v-if="activeCategory === 'favs'">
           <h1 class="text-lg font-bold text-gray-800 dark:text-gray-100 mb-5 flex items-center gap-2">
@@ -70,23 +89,19 @@
           </div>
         </template>
 
-        <!-- When searching: flat grid with title -->
+        <!-- Search results -->
         <template v-else-if="searchQuery">
           <h1 class="text-lg font-bold text-gray-800 dark:text-gray-100 mb-5">
             搜索结果
             <span class="text-sm font-normal text-gray-400 ml-2">"{{ searchQuery }}"</span>
           </h1>
-          <div
-            v-if="filteredResources.length"
-            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4"
-          >
+          <div v-if="filteredResources.length" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
             <ResourceCard
               v-for="res in filteredResources" :key="res.id"
               :resource="res" :isFav="favIds.has(res.id)"
               @toggleFav="toggleFav(res.id)"
             />
           </div>
-          <!-- Empty state -->
           <div v-else class="flex flex-col items-center justify-center py-24 text-gray-400 dark:text-gray-600">
             <div class="w-20 h-20 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center mb-5">
               <SearchX :size="36" class="opacity-60" />
@@ -98,13 +113,14 @@
           </div>
         </template>
 
-        <!-- When browsing: grouped by category with anchors -->
+        <!-- Browse by category -->
         <template v-else>
           <template v-if="activeCategory === 'all'">
+            <div class="space-y-5">
             <div v-for="cat in categoriesWithItems" :key="cat.id">
               <h2
                 :id="`section-${cat.id}`"
-                class="text-base font-bold text-gray-700 dark:text-gray-300 mb-3 mt-8 first:mt-0 flex items-center gap-2"
+                class="text-base font-bold text-gray-700 dark:text-gray-300 mb-3 flex items-center gap-2"
               >
                 <component :is="catIcons[cat.icon]" :size="16" class="text-indigo-500" />
                 {{ cat.name }}
@@ -117,20 +133,18 @@
                 />
               </div>
             </div>
+            </div>
           </template>
           <template v-else>
-            <h1
-              :id="`section-${activeCategory}`"
-              class="text-lg font-bold text-gray-800 dark:text-gray-100 mb-5"
-            >
+            <h1 :id="`section-${activeCategory}`" class="text-lg font-bold text-gray-800 dark:text-gray-100 mb-5">
               {{ currentCategoryName }}
             </h1>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
               <ResourceCard
-              v-for="res in filteredResources" :key="res.id"
-              :resource="res" :isFav="favIds.has(res.id)"
-              @toggleFav="toggleFav(res.id)"
-            />
+                v-for="res in filteredResources" :key="res.id"
+                :resource="res" :isFav="favIds.has(res.id)"
+                @toggleFav="toggleFav(res.id)"
+              />
             </div>
           </template>
         </template>
@@ -150,12 +164,10 @@ const activeCategory = ref('all')
 const sidebarOpen = ref(false)
 const searchQuery = ref('')
 
-// Dark mode — restore from localStorage on load
 const savedDark = localStorage.getItem('easynav-dark') === 'true'
 const isDark = ref(savedDark)
 if (savedDark) document.documentElement.classList.add('dark')
 
-// Favorites — stored as Set of resource IDs
 const favIds = ref(new Set(JSON.parse(localStorage.getItem('easynav-favs') || '[]')))
 
 const catIcons = { LayoutGrid, Film, Wrench, Code2, Palette, Bot, Newspaper }
@@ -185,7 +197,6 @@ const filteredResources = computed(() => {
   let list = activeCategory.value === 'all'
     ? resources
     : resources.filter(r => r.category === activeCategory.value)
-
   if (searchQuery.value.trim()) {
     const q = searchQuery.value.toLowerCase()
     list = list.filter(r =>
@@ -213,7 +224,6 @@ function toggleFav(id) {
 function selectCategory(id) {
   activeCategory.value = id
   sidebarOpen.value = false
-  // Smooth scroll to section anchor
   setTimeout(() => {
     const el = document.getElementById(`section-${id}`)
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
