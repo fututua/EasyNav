@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://easynav.qzz.io/sitemap.xml
