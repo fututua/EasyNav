@@ -162,3 +162,69 @@ Vercel/Netlify 自动检测到 push
 
 **Q: 如何回滚到上一个版本？**
 Vercel/Netlify 都保留了每次部署的历史记录，在 Dashboard 中点击任意历史版本的 **"Promote to Production"** 即可回滚。
+
+---
+
+## 点击量统计 + 树洞（Supabase）
+
+EasyNav 使用 Supabase 作为后端，实现资源点击统计和树洞功能。前端直连 Supabase，无需独立后端服务。
+
+### 涉及文件
+
+| 文件 | 说明 |
+|------|------|
+| `supabase/schema.sql` | 数据库建表 + RLS 策略 + RPC 函数，在 Supabase SQL Editor 执行一次 |
+| `src/supabase.js` | Supabase 客户端初始化 |
+| `src/clickStats.js` | 点击统计：`loadStats()` 初始化，`recordClick()` 原子自增（10s 防抖） |
+| `src/components/ResourceCard.vue` | 卡片点击埋点 + 🔥 热度展示 |
+
+### 数据表结构
+
+**click_stats** — 点击统计
+```
+site_id    TEXT  PRIMARY KEY   资源 ID（字符串）
+count      INT                 点击次数
+updated_at TIMESTAMPTZ         最后更新时间
+```
+
+**tree_hole** — 树洞（MVP 预留）
+```
+id         UUID  PRIMARY KEY   自动生成
+content    TEXT  1~500字       文字内容
+image_url  TEXT  可选          配图 URL（Supabase Storage）
+created_at TIMESTAMPTZ         发布时间
+```
+
+### 启用步骤
+
+**1. 创建 Supabase 项目**
+
+1. 打开 https://supabase.com，注册并创建新项目
+2. 记录 **Project URL** 和 **anon public key**（在 Settings → API 中）
+
+**2. 初始化数据库**
+
+在 Supabase Dashboard → **SQL Editor** 中，粘贴并执行 `supabase/schema.sql` 的全部内容。
+
+**3. 配置环境变量**
+
+本地开发，在项目根目录创建 `.env.local`：
+```
+VITE_SUPABASE_URL=xxx
+VITE_SUPABASE_ANON_KEY=xxx
+```
+
+Vercel 部署，在 Dashboard → **Settings → Environment Variables** 添加同名变量。
+
+**4. 安装依赖并启动**
+
+```bash
+npm install @supabase/supabase-js
+npm run dev
+```
+
+### RLS 安全策略说明
+
+- `click_stats`：匿名用户可读、可写（通过 RPC 原子自增）
+- `tree_hole`：匿名用户可读、可发布；修改/删除仅限管理员通过 Dashboard 操作
+- 所有写操作通过 `anon key` 完成，不暴露 `service_role` key

@@ -1,0 +1,15 @@
+# 浏览器兼容性配置
+# 用于 Autoprefixer 和其他工具
+
+# 生产环境
+> 0.5%
+last 2 versions
+Firefox ESR
+not dead
+not IE 11
+
+# 开发环境
+[development]
+last 1 chrome version
+last 1 firefox version
+last 1 safari version

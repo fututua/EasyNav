@@ -4,13 +4,56 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>EasyNav - 精选网址导航站</title>
+
+    <!-- 内容安全策略 -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' https: data:; font-src 'self' data:; connect-src 'self' https:; frame-src 'none';" />
+
+    <!-- 防止暗色模式闪烁：在 Vue 加载前提前设置 -->
+    <script>
+      try {
+        if (localStorage.getItem('easynav-dark') === 'true') {
+          document.documentElement.classList.add('dark')
+        }
+      } catch (e) {}
+    </script>
+
+    <!-- SEO 基础元数据 -->
     <meta name="description" content="EasyNav 是一个简洁高效的网址导航站，收录影视、工具、开发、设计、AI、资讯等优质网站，帮助你快速找到所需资源。" />
     <meta name="keywords" content="网址导航,导航站,工具网站,开发资源,AI工具,设计素材,影视网站,EasyNav" />
     <meta name="author" content="EasyNav" />
-    <!-- Open Graph -->
+    <meta name="theme-color" content="#6366f1" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://easynav.qzz.io/" />
     <meta property="og:title" content="EasyNav - 精选网址导航站" />
     <meta property="og:description" content="收录影视、工具、开发、设计、AI、资讯等优质网站的导航站。" />
-    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://easynav.qzz.io/og-image.jpg" />
+    <meta property="og:locale" content="zh_CN" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://easynav.qzz.io/" />
+    <meta name="twitter:title" content="EasyNav - 精选网址导航站" />
+    <meta name="twitter:description" content="收录影视、工具、开发、设计、AI、资讯等优质网站的导航站。" />
+    <meta name="twitter:image" content="https://easynav.qzz.io/twitter-image.jpg" />
+
+    <!-- 结构化数据 -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "EasyNav",
+      "description": "精选网址导航站，收录影视、工具、开发、设计、AI、资讯等优质网站",
+      "url": "https://easynav.qzz.io",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://easynav.qzz.io/?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+
     <!-- Favicon: SVG inline (no external file needed) -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236366f1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><polygon points='16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76'/></svg>" />
   </head>

@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(npm create:*)",
-      "WebFetch(domain:api.iowen.cn)"
+      "WebFetch(domain:api.iowen.cn)",
+      "Bash(npm uninstall:*)",
+      "Bash(npm run:*)"
     ]
   }
 }
