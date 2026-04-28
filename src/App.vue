@@ -45,8 +45,22 @@
           <X v-else :size="20" />
         </button>
 
+        <div
+          v-if="isSpecialView"
+          class="flex min-w-0 flex-1 items-center gap-3 rounded-[1.35rem] border border-white/45 bg-white/38 px-4 py-2.5 text-sm text-gray-700 shadow-sm backdrop-blur-xl dark:border-white/10 dark:bg-white/5 dark:text-gray-200"
+        >
+          <component :is="specialViewIcon" :size="16" class="shrink-0 text-indigo-500 dark:text-indigo-300" />
+          <div class="min-w-0">
+            <p class="truncate font-medium">{{ specialViewTitle }}</p>
+            <p class="truncate text-xs text-gray-500 dark:text-gray-400">{{ specialViewDescription }}</p>
+          </div>
+        </div>
+
         <!-- Search bar -->
-        <div class="relative max-w-md min-w-0 flex-1 rounded-[1.15rem] dark:border dark:border-slate-600 dark:bg-slate-950 dark:p-[1px] dark:shadow-[0_10px_24px_-18px_rgba(0,0,0,0.7)]">
+        <div
+          v-else
+          class="relative max-w-md min-w-0 flex-1 rounded-[1.15rem] dark:border dark:border-slate-600 dark:bg-slate-950 dark:p-[1px] dark:shadow-[0_10px_24px_-18px_rgba(0,0,0,0.7)]"
+        >
           <Search class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-500" :size="16" />
           <input
             v-model="searchQuery"
@@ -64,13 +78,16 @@
           </button>
         </div>
 
-        <span class="hidden shrink-0 rounded-full border border-white/45 bg-white/35 px-2.5 py-1 text-xs font-medium text-indigo-700 shadow-sm backdrop-blur-md dark:border-white/10 dark:bg-white/5 dark:text-indigo-300 sm:block">
+        <span
+          v-if="!isSpecialView"
+          class="hidden shrink-0 rounded-full border border-white/45 bg-white/35 px-2.5 py-1 text-xs font-medium text-indigo-700 shadow-sm backdrop-blur-md dark:border-white/10 dark:bg-white/5 dark:text-indigo-300 sm:block"
+        >
           {{ filteredResources.length }} 个资源
         </span>
 
         <div class="ml-auto flex shrink-0 items-center gap-2">
           <!-- Toggle wall resources button -->
-          <div class="group relative">
+          <div v-if="!isSpecialView" class="group relative">
             <button
               @click="toggleWallResources"
               :aria-label="showWallResources ? '隐藏墙' : '显示墙'"
@@ -105,8 +122,25 @@
 
       <!-- Scrollable content -->
       <main id="main-content" class="flex-1 overflow-y-auto px-3 py-5 sm:px-4 sm:py-6 md:px-6 md:py-8" role="main">
+        <template v-if="isSixtyNewsView">
+          <News60sPanel
+            :status="newsStatus"
+            :news-data="newsData"
+            :error-message="newsErrorMessage"
+            @retry="loadSixtyNews"
+          />
+        </template>
+        <template v-else-if="isItNewsView">
+          <ItNewsPanel
+            :status="itNewsStatus"
+            :items="itNews"
+            :error-message="itNewsErrorMessage"
+            @retry="loadItNews"
+          />
+        </template>
+
         <!-- Favorites view -->
-        <template v-if="activeCategory === 'favs'">
+        <template v-else-if="activeCategory === 'favs'">
           <h1 class="text-lg font-bold text-gray-800 dark:text-gray-100 mb-5 flex items-center gap-2">
             <Star :size="18" class="text-yellow-400" /> 我的收藏
           </h1>
@@ -194,16 +228,25 @@
 
 <script setup>
 import { ref, computed, onMounted, nextTick } from 'vue'
-import { Menu, X, Search, SearchX, XCircle, Star, LayoutGrid, Film, Wrench, Code2, Palette, Bot, Newspaper, Sun, Moon, Gift, Eye, EyeOff } from 'lucide-vue-next'
+import { Menu, X, Search, SearchX, XCircle, Star, LayoutGrid, Film, Wrench, Code2, Palette, Bot, Newspaper, Cpu, Sun, Moon, Gift, Eye, EyeOff } from 'lucide-vue-next'
 import Sidebar from './components/Sidebar.vue'
 import ResourceCard from './components/ResourceCard.vue'
+import News60sPanel from './components/News60sPanel.vue'
+import ItNewsPanel from './components/ItNewsPanel.vue'
 import { categories, resources } from './data/resources.js'
 import { loadStats } from './clickStats.js'
+import { fetchItNews, fetchSixtyNews, IT_NEWS_CATEGORY_ID, SIXTY_NEWS_CATEGORY_ID } from './news60s.js'
 import { getItem, setItem, getJSON, setJSON } from './utils/storage.js'
 
 const activeCategory = ref('all')
 const sidebarOpen = ref(false)
 const searchQuery = ref('')
+const newsStatus = ref('idle')
+const newsData = ref(null)
+const newsErrorMessage = ref('')
+const itNewsStatus = ref('idle')
+const itNews = ref([])
+const itNewsErrorMessage = ref('')
 
 // 后台静默加载统计数据，不阻塞页面渲染
 onMounted(() => {
@@ -229,6 +272,20 @@ function loadFavIds() {
 }
 
 const favIds = ref(loadFavIds())
+const isSixtyNewsView = computed(() => activeCategory.value === SIXTY_NEWS_CATEGORY_ID)
+const isItNewsView = computed(() => activeCategory.value === IT_NEWS_CATEGORY_ID)
+const isSpecialView = computed(() => isSixtyNewsView.value || isItNewsView.value)
+const specialViewIcon = computed(() => (isItNewsView.value ? Cpu : Newspaper))
+const specialViewTitle = computed(() => {
+  if (isSixtyNewsView.value) return '60s 看世界'
+  if (isItNewsView.value) return 'IT新闻'
+  return ''
+})
+const specialViewDescription = computed(() => {
+  if (isSixtyNewsView.value) return '点击侧边栏时拉取最新新闻图片'
+  if (isItNewsView.value) return '点击侧边栏时拉取最新 IT 新闻列表'
+  return ''
+})
 
 const catIcons = { LayoutGrid, Film, Wrench, Code2, Palette, Bot, Newspaper, Gift }
 
@@ -315,9 +372,43 @@ function toggleFav(id) {
   }
 }
 
+async function loadSixtyNews() {
+  newsStatus.value = 'loading'
+  newsErrorMessage.value = ''
+  try {
+    newsData.value = await fetchSixtyNews()
+    newsStatus.value = 'success'
+  } catch (error) {
+    console.error('加载 60s 看世界失败:', error)
+    newsData.value = null
+    newsErrorMessage.value = error instanceof Error ? error.message : '当前无法获取 60s 看世界内容'
+    newsStatus.value = 'error'
+  }
+}
+
+async function loadItNews() {
+  itNewsStatus.value = 'loading'
+  itNewsErrorMessage.value = ''
+  try {
+    itNews.value = await fetchItNews()
+    itNewsStatus.value = 'success'
+  } catch (error) {
+    console.error('加载 IT 新闻失败:', error)
+    itNews.value = []
+    itNewsErrorMessage.value = error instanceof Error ? error.message : '当前无法获取 IT 新闻'
+    itNewsStatus.value = 'error'
+  }
+}
+
 async function selectCategory(id) {
   activeCategory.value = id
   sidebarOpen.value = false
+  if (id === SIXTY_NEWS_CATEGORY_ID) {
+    await loadSixtyNews()
+  }
+  if (id === IT_NEWS_CATEGORY_ID) {
+    await loadItNews()
+  }
   await nextTick()
   const el = document.getElementById(`section-${id}`)
   if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })

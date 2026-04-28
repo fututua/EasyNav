@@ -1,6 +1,5 @@
 <template>
   <div class="flex h-full min-h-0 flex-col overflow-hidden border-r border-white/35 bg-white/40 shadow-[0_18px_45px_-32px_rgba(79,70,229,0.35)] backdrop-blur-2xl backdrop-saturate-150 dark:border-white/10 dark:bg-gray-900/30 dark:shadow-none">
-    <!-- Logo -->
     <div class="px-5 pb-5 pt-6">
       <div class="flex items-center gap-3 rounded-xl bg-gradient-to-r from-indigo-500 via-indigo-500 to-violet-500 px-3.5 py-3 text-white shadow-lg shadow-indigo-500/20">
         <div class="flex h-9 w-9 items-center justify-center rounded-[1.35rem] bg-white/15 backdrop-blur">
@@ -13,7 +12,6 @@
       </div>
     </div>
 
-    <!-- Category list -->
     <nav ref="navRef" class="flex-1 overflow-y-auto px-3 pb-5 pt-4 md:overflow-y-hidden">
       <div class="mb-5 px-3 text-[11px] font-semibold uppercase tracking-[0.24em] text-gray-400 dark:text-gray-600">
         分类导航
@@ -27,26 +25,31 @@
           v-for="cat in allCategories"
           :key="cat.id"
           :ref="el => setCategoryRef(cat.id, el)"
-          @click="$emit('select', cat.id)"
           :class="[
             'group relative z-10 mb-2 flex w-full items-center gap-3 overflow-hidden rounded-xl border px-3 py-2.5 text-sm font-medium transition-all duration-300 ease-out',
             active === cat.id
               ? 'border-transparent bg-transparent font-semibold text-indigo-950 dark:text-white'
-              : 'border-transparent text-gray-600 hover:border-white/35 hover:bg-white/30 hover:text-gray-900 dark:text-gray-500 dark:hover:border-white/10 dark:hover:bg-white/5 dark:hover:text-gray-100'
+              : 'border-transparent text-gray-600 hover:border-white/35 hover:bg-white/30 hover:text-gray-900 dark:text-gray-500 dark:hover:border-white/10 dark:hover:bg-white/5 dark:hover:text-gray-100',
           ]"
+          @click="$emit('select', cat.id)"
         >
-        <span
-          :class="[
-            'relative z-10 flex h-9 w-9 shrink-0 items-center justify-center rounded-[0.95rem] transition-all duration-300 ease-out',
-            active === cat.id
-              ? 'bg-white text-indigo-700 shadow-[0_12px_24px_-14px_rgba(79,70,229,0.4)] ring-1 ring-indigo-300/80 backdrop-blur-md dark:bg-slate-100 dark:text-indigo-500 dark:ring-indigo-300/35'
-              : 'bg-white/35 text-gray-500 backdrop-blur-sm dark:bg-white/5 dark:text-gray-500'
-          ]"
-        >
-          <component :is="icons[cat.icon]" :size="17" />
-        </span>
-        <span class="relative z-10 flex-1 text-left text-[0.95rem] transition-colors duration-300" :class="active === cat.id ? 'tracking-[0.01em]' : ''">{{ cat.name }}</span>
-      </button>
+          <span
+            :class="[
+              'relative z-10 flex h-9 w-9 shrink-0 items-center justify-center rounded-[0.95rem] transition-all duration-300 ease-out',
+              active === cat.id
+                ? 'bg-white text-indigo-700 shadow-[0_12px_24px_-14px_rgba(79,70,229,0.4)] ring-1 ring-indigo-300/80 backdrop-blur-md dark:bg-slate-100 dark:text-indigo-500 dark:ring-indigo-300/35'
+                : 'bg-white/35 text-gray-500 backdrop-blur-sm dark:bg-white/5 dark:text-gray-500',
+            ]"
+          >
+            <component :is="icons[cat.icon]" :size="17" />
+          </span>
+          <span
+            class="relative z-10 flex-1 text-left text-[0.95rem] transition-colors duration-300"
+            :class="active === cat.id ? 'tracking-[0.01em]' : ''"
+          >
+            {{ cat.name }}
+          </span>
+        </button>
       </div>
     </nav>
 
@@ -57,19 +60,23 @@
 </template>
 
 <script setup>
-import { computed, nextTick, onMounted, onBeforeUnmount, ref, watch } from 'vue'
-import { Compass, LayoutGrid, Film, Wrench, Code2, Palette, Bot, Newspaper, Star, Gift } from 'lucide-vue-next'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { Bot, Code2, Compass, Cpu, Film, Gift, LayoutGrid, Newspaper, Palette, Star, Wrench } from 'lucide-vue-next'
 import { categories } from '../data/resources.js'
+import { IT_NEWS_CATEGORY_ID, SIXTY_NEWS_CATEGORY_ID } from '../news60s.js'
 
 const props = defineProps({
   active: { type: String, default: 'all' },
 })
+
 defineEmits(['select'])
 
-const icons = { LayoutGrid, Film, Wrench, Code2, Palette, Bot, Newspaper, Star, Gift }
+const icons = { LayoutGrid, Film, Wrench, Code2, Palette, Bot, Newspaper, Cpu, Star, Gift }
 
 const allCategories = computed(() => [
   ...categories,
+  { id: SIXTY_NEWS_CATEGORY_ID, name: '60s看世界', icon: 'Newspaper' },
+  { id: IT_NEWS_CATEGORY_ID, name: 'IT新闻', icon: 'Cpu' },
   { id: 'favs', name: '我的收藏', icon: 'Star' },
 ])
 
@@ -105,10 +112,12 @@ async function updateHighlight() {
 }
 
 watch(() => props.active, updateHighlight, { immediate: true })
+
 onMounted(() => {
   updateHighlight()
   window.addEventListener('resize', updateHighlight)
 })
+
 onBeforeUnmount(() => {
   window.removeEventListener('resize', updateHighlight)
 })

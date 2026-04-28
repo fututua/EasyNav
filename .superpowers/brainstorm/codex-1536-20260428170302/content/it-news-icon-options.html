@@ -1,0 +1,131 @@
+<style>
+  .mock-sidebar {
+    background: linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+    border: 1px solid rgba(99, 102, 241, 0.16);
+    border-radius: 20px;
+    padding: 18px;
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 16px;
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: #334155;
+    background: rgba(255,255,255,0.66);
+    border: 1px solid rgba(255,255,255,0.85);
+  }
+  .nav-item.active {
+    background: linear-gradient(135deg, #e0e7ff 0%, #ffffff 100%);
+    border-color: rgba(99, 102, 241, 0.28);
+    color: #312e81;
+    font-weight: 600;
+  }
+  .icon-box {
+    width: 36px;
+    height: 36px;
+    border-radius: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff;
+    box-shadow: 0 8px 18px -14px rgba(79, 70, 229, 0.5);
+    border: 1px solid rgba(99, 102, 241, 0.16);
+    color: #4f46e5;
+    flex: 0 0 auto;
+  }
+  .icon-box svg {
+    width: 18px;
+    height: 18px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .note {
+    margin-top: 10px;
+    font-size: 13px;
+    color: #64748b;
+    line-height: 1.6;
+  }
+</style>
+
+<h2>IT新闻图标改哪个方向</h2>
+<p class="subtitle">目标是和“60s看世界”的报纸图标拉开区分，同时保留“资讯”属性。</p>
+
+<div class="cards">
+  <div class="card" data-choice="a-cpu" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mock-sidebar">
+        <div class="nav-item">
+          <div class="icon-box">
+            <svg viewBox="0 0 24 24"><path d="M12 20v2"/><path d="M12 2v2"/><path d="M17 20v2"/><path d="M17 2v2"/><path d="M2 12h2"/><path d="M2 17h2"/><path d="M2 7h2"/><path d="M20 12h2"/><path d="M20 17h2"/><path d="M20 7h2"/><path d="M7 20v2"/><path d="M7 2v2"/><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="8" y="8" width="8" height="8" rx="1"/></svg>
+          </div>
+          <div>60s看世界</div>
+        </div>
+        <div class="nav-item active">
+          <div class="icon-box">
+            <svg viewBox="0 0 24 24"><path d="M12 20v2"/><path d="M12 2v2"/><path d="M17 20v2"/><path d="M17 2v2"/><path d="M2 12h2"/><path d="M2 17h2"/><path d="M2 7h2"/><path d="M20 12h2"/><path d="M20 17h2"/><path d="M20 7h2"/><path d="M7 20v2"/><path d="M7 2v2"/><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="8" y="8" width="8" height="8" rx="1"/></svg>
+          </div>
+          <div>IT新闻</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A. `Cpu`</h3>
+      <p>科技感最强，和 IT 主题贴合度最高。我推荐这个方向。</p>
+      <div class="note">优点：一眼看出“技术类内容”。缺点：资讯感比“新闻”稍弱一点。</div>
+    </div>
+  </div>
+
+  <div class="card" data-choice="b-rss" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mock-sidebar">
+        <div class="nav-item">
+          <div class="icon-box">
+            <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 1 1 6.5 22 2.5 2.5 0 0 1 4 19.5Z"/><path d="M4 4a16 16 0 0 1 16 16"/><path d="M4 11a9 9 0 0 1 9 9"/></svg>
+          </div>
+          <div>60s看世界</div>
+        </div>
+        <div class="nav-item active">
+          <div class="icon-box">
+            <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 1 1 6.5 22 2.5 2.5 0 0 1 4 19.5Z"/><path d="M4 4a16 16 0 0 1 16 16"/><path d="M4 11a9 9 0 0 1 9 9"/></svg>
+          </div>
+          <div>IT新闻</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B. `Rss`</h3>
+      <p>更像资讯流、订阅、快讯，保留“新闻聚合”的意味。</p>
+      <div class="note">优点：信息流感强。缺点：技术属性不如 A 直接。</div>
+    </div>
+  </div>
+
+  <div class="card" data-choice="c-monitor-dot" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mock-sidebar">
+        <div class="nav-item">
+          <div class="icon-box">
+            <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/><circle cx="18" cy="8" r="1.5"/></svg>
+          </div>
+          <div>60s看世界</div>
+        </div>
+        <div class="nav-item active">
+          <div class="icon-box">
+            <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/><circle cx="18" cy="8" r="1.5"/></svg>
+          </div>
+          <div>IT新闻</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C. `MonitorDot`</h3>
+      <p>偏“数码屏幕/在线动态”，比 A 温和，比 B 更像科技产品。</p>
+      <div class="note">优点：科技资讯和设备新闻都兼容。缺点：识别度略弱于 A。</div>
+    </div>
+  </div>
+</div>

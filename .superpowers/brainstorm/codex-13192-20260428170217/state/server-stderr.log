@@ -1,0 +1,55 @@
+=C:\Users\as108\Desktop\easynav_sonnect4.5\.superpowers\brainstorm\codex-13192-20260428170217 : 无法将“=C:\Users\as108
+\Desktop\easynav_sonnect4.5\.superpowers\brainstorm\codex-13192-20260428170217”项识别为 cmdlet、函数、脚本文件或可运行
+程序的名称。请检查名称的拼写，如果包括路径，请确保路径正确，然后再试一次。
+所在位置 行:1 字符: 1
++ ='C:\Users\as108\Desktop\easynav_sonnect4.5\.superpowers\brainstorm\c ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (=C:\Users\as108...-20260428170217:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+ 
+=127.0.0.1 : 无法将“=127.0.0.1”项识别为 cmdlet、函数、脚本文件或可运行程序的名称。请检查名称的拼写，如果包括路径，请
+确保路径正确，然后再试一次。
+所在位置 行:1 字符: 98
++ ... erpowers\brainstorm\codex-13192-20260428170217'; ='127.0.0.1'; ='loca ...
++                                                      ~~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (=127.0.0.1:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+ 
+=localhost : 无法将“=localhost”项识别为 cmdlet、函数、脚本文件或可运行程序的名称。请检查名称的拼写，如果包括路径，请
+确保路径正确，然后再试一次。
+所在位置 行:1 字符: 112
++ ... storm\codex-13192-20260428170217'; ='127.0.0.1'; ='localhost'; ='1319 ...
++                                                      ~~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (=localhost:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+ 
+=13192 : 无法将“=13192”项识别为 cmdlet、函数、脚本文件或可运行程序的名称。请检查名称的拼写，如果包括路径，请确保路径
+正确，然后再试一次。
+所在位置 行:1 字符: 126
++ ... x-13192-20260428170217'; ='127.0.0.1'; ='localhost'; ='13192'; & 'D:\ ...
++                                                          ~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (=13192:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+ 
+node:fs:1349
+  const result = binding.mkdir(
+                         ^
+
+Error: EPERM: operation not permitted, mkdir 'C:\tmp\brainstorm\content'
+    at Object.mkdirSync (node:fs:1349:26)
+    at startServer (C:\Users\as108\.codex\superpowers\skills\brainstorming\scripts\server.cjs:263:39)
+    at Object.<anonymous> (C:\Users\as108\.codex\superpowers\skills\brainstorming\scripts\server.cjs:351:3)
+    at Module._compile (node:internal/modules/cjs/loader:1812:14)
+    at Object..js (node:internal/modules/cjs/loader:1943:10)
+    at Module.load (node:internal/modules/cjs/loader:1533:32)
+    at Module._load (node:internal/modules/cjs/loader:1335:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47 {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'mkdir',
+  path: 'C:\\tmp\\brainstorm\\content'
+}
+
+Node.js v24.14.0
